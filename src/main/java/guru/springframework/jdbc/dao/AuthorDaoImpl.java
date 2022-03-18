@@ -30,8 +30,9 @@ public class AuthorDaoImpl implements AuthorDao {
                                                                     " WHERE a.firstName = :first_name AND a.lastName = :last_name", Author.class);
         query.setParameter("first_name", firstName);
         query.setParameter("last_name", lastName);
-
-        return query.getSingleResult();
+        Author author = query.getSingleResult();
+        getEntityManager().close();
+        return author;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class AuthorDaoImpl implements AuthorDao {
         em.persist(author);
         em.flush();
         em.getTransaction().commit();
-
+        em.close();
         return author;
     }
 
@@ -53,6 +54,7 @@ public class AuthorDaoImpl implements AuthorDao {
         em.flush();
         em.clear();
         em.getTransaction().commit();
+        em.close();
         return getById(author.getId());
     }
 
@@ -64,7 +66,7 @@ public class AuthorDaoImpl implements AuthorDao {
         em.remove(author);
         em.flush();
         em.getTransaction().commit();
-
+        em.close();
     }
 
     private EntityManager getEntityManager(){
