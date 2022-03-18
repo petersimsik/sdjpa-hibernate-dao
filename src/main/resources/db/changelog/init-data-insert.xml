@@ -1,0 +1,53 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.6.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <changeSet author="PSI" id="1">
+        <sql>
+
+            insert into author (first_name, last_name) values ('Craig', 'Walls');
+
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="2">
+        <sql>
+
+            insert into book (isbn, publisher, title, author_id) values ('978-1617294945', 'Simon and Schuster',
+                                                                         'Spring in Action, 5th Edition',(select id from author where first_name = 'Craig' and last_name = 'Walls') );
+
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="3">
+        <sql>
+            insert into book (isbn, publisher, title, author_id) values ('978-1617292545', 'Simon and Schuster',
+                                                                         'Spring Boot in Action, 1st Edition',(select id from author where first_name = 'Craig' and last_name = 'Walls') );
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="4">
+        <sql>
+
+            insert into book (isbn, publisher, title, author_id) values ('978-1617297571', 'Simon and Schuster',
+                                                                         'Spring in Action, 6th Edition',(select id from author where first_name = 'Craig' and last_name = 'Walls') );
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="5">
+        <sql>
+            insert into author (first_name, last_name) values ('Eric', 'Evans');
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="6">
+        <sql>
+            insert into book (isbn, publisher, title, author_id) values ('978-0321125217', 'Addison Wesley',
+                                                                         'Domain-Driven Design',(select id from author where first_name = 'Eric' and last_name = 'Evans') );
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="7">
+        <sql>
+            insert into author (first_name, last_name) values ('Robert', 'Martin');
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="8">
+        <sql>
+            insert into book (isbn, publisher, title, author_id) values ('978-0134494166', 'Addison Wesley',
+                                                                         'Clean Code',(select id from author where first_name = 'Robert' and last_name = 'Martin') );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

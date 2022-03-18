@@ -1,0 +1,51 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.6.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <changeSet author="PSI" id="1">
+        <sql>
+            drop table if exists book cascade;
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="2">
+        <sql>
+            drop table if exists author;
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="3">
+        <sql>
+            drop table if exists author;
+        </sql>
+    </changeSet>
+    <changeSet author="PSI" id="4">
+        <createTable tableName="book">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"></constraints>
+            </column>
+            <column name="isbn" type="VARCHAR(255)"/>
+            <column name="publisher" type="varchar(255)"/>
+            <column name="title" type="varchar(255)"/>
+            <column name="author_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PSI" id="5">
+        <addAutoIncrement tableName="book" columnName="id" incrementBy="1" startWith="1" columnDataType="bigint"></addAutoIncrement>
+    </changeSet>
+    <changeSet author="PSI" id="6">
+        <createTable tableName="author">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"></constraints>
+            </column>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PSI" id="7">
+        <addAutoIncrement tableName="author" columnName="id" incrementBy="1" startWith="1" columnDataType="bigint"></addAutoIncrement>
+    </changeSet>
+    <changeSet author="PSI" id="8">
+        <addForeignKeyConstraint baseTableName="book" baseColumnNames="author_id" constraintName="FK_author" referencedTableName="author"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+    </changeSet>
+
+</databaseChangeLog>
