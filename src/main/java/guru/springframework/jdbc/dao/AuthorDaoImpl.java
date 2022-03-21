@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 /**
  * Created by jt on 8/28/21.
@@ -26,8 +28,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author findAuthorByName(String firstName, String lastName) {
-        TypedQuery<Author> query = getEntityManager().createQuery("SELECT a FROM Author a " +
-                                                                    " WHERE a.firstName = :first_name AND a.lastName = :last_name", Author.class);
+        TypedQuery<Author> query = getEntityManager().createNamedQuery("find_by_name", Author.class);
         query.setParameter("first_name", firstName);
         query.setParameter("last_name", lastName);
         Author author = query.getSingleResult();
@@ -67,6 +68,30 @@ public class AuthorDaoImpl implements AuthorDao {
         em.flush();
         em.getTransaction().commit();
         em.close();
+    }
+
+    @Override
+    public List<Author> listAuthorByLastNameLike(String lastName) {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT a FROM Author a WHERE a.lastName like :last_name");
+            query.setParameter("last_name", lastName + "%");
+            List<Author> authors = query.getResultList();
+            return authors;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Author> findAll() {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Author> typedQuery = em.createNamedQuery("author_find_all", Author.class);
+            return typedQuery.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     private EntityManager getEntityManager(){
