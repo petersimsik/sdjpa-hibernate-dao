@@ -178,4 +178,11 @@ public class DaoIntegrationTest {
         assertThat(authors).isNotNull();
         assertThat(authors.size()).isGreaterThan(0);
     }
+
+    @Test
+    void testBookFindAll() {
+        List<Book> books = bookDao.findAll();
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isGreaterThan(0);
+    }
 }
