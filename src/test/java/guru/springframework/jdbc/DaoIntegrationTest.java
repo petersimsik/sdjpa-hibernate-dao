@@ -185,4 +185,25 @@ public class DaoIntegrationTest {
         assertThat(books).isNotNull();
         assertThat(books.size()).isGreaterThan(0);
     }
+
+    @Test
+    void testFindAuthorByNameCriteria() {
+        Author author = authorDao.findAuthorByNameCriteria("Craig", "Walls");
+
+        assertThat(author).isNotNull();
+    }
+
+    @Test
+    void testFindBookByTitleCriteria() {
+        Book book = bookDao.findBookByTitleCriteria("Clean Code");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
+    void testGetByNameNative() {
+        Author author = authorDao.findAuthorByNameNative("Craig", "Walls");
+
+        assertThat(author).isNotNull();
+    }
 }

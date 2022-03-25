@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 /**
@@ -37,6 +38,47 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
+    public Author findAuthorByNameCriteria(String firstName, String lastName) {
+        EntityManager em = getEntityManager();
+        try{
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<Author> criteriaQuery = criteriaBuilder.createQuery(Author.class);
+
+            Root<Author> root = criteriaQuery.from(Author.class);
+
+            ParameterExpression<String> firstNameParam = criteriaBuilder.parameter(String.class);
+            ParameterExpression<String> lastNameParam = criteriaBuilder.parameter(String.class);
+
+            Predicate firstNamePred = criteriaBuilder.equal(root.get("firstName"), firstNameParam);
+            Predicate lastNamePred = criteriaBuilder.equal(root.get("lastName"), lastNameParam);
+
+            criteriaQuery.select(root).where(criteriaBuilder.and(firstNamePred, lastNamePred));
+
+            TypedQuery<Author> typedQuery = em.createQuery(criteriaQuery);
+            typedQuery.setParameter(firstNameParam, firstName);
+            typedQuery.setParameter(lastNameParam, lastName);
+
+            return typedQuery.getSingleResult();
+
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Author findAuthorByNameNative(String firstName, String lastName) {
+        EntityManager em = getEntityManager();
+        try{
+            Query query = em.createNativeQuery("SELECT * FROM author a WHERE a.first_name = ? AND a.last_name = ?", Author.class);
+            query.setParameter(1, firstName);
+            query.setParameter(2, lastName);
+            return (Author) query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
+        @Override
     public Author saveNewAuthor(Author author) {
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
