@@ -1,6 +1,7 @@
 package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Book;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -124,6 +125,33 @@ public class BookDaoImpl implements BookDao {
             return query.getResultList();
         }
         finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Book> findAll(Pageable pageable) {
+        EntityManager em = getEntityManager();
+        try{
+            TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b", Book.class);
+            query.setFirstResult(Math.toIntExact(pageable.getOffset()));
+            query.setMaxResults(pageable.getPageSize());
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Book> findAllBooksSortByTitle(Pageable pageable) {
+        EntityManager em = getEntityManager();
+        try{
+            String jpql = "SELECT b FROM Book b ORDER BY b.title " + (pageable.getSort().getOrderFor("title") == null ? "DESC" : pageable.getSort().getOrderFor("title").getDirection().name());
+            TypedQuery<Book> query = em.createQuery(jpql, Book.class);
+            query.setFirstResult(Math.toIntExact(pageable.getOffset()));
+            query.setMaxResults(pageable.getPageSize());
+            return query.getResultList();
+        } finally {
             em.close();
         }
     }
