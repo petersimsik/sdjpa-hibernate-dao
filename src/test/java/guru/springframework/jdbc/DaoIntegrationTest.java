@@ -229,4 +229,49 @@ public class DaoIntegrationTest {
         assertThat(books).isNotNull();
         assertThat(books.size()).isEqualTo(3);
     }
+
+    @Test
+    void findAllAuthorsPageable() {
+        List<Author> authors = authorDao.findAll(PageRequest.of(0, 40));
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isEqualTo(40);
+    }
+
+    @Test
+    void findAllAuthorsByLastName() {
+        List<Author> authors = authorDao.findAllAuthorsByLastName("Smith", PageRequest.of(0, 10));
+
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isEqualTo(10);
+    }
+
+    @Test
+    void findAllAuthorsByLastNameSortFirstNameDesc() {
+        List<Author> authors = authorDao.findAllAuthorsByLastName("Smith",
+                PageRequest.of(0, 10, Sort.by(Sort.Order.desc("firstName"))));
+
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isEqualTo(10);
+        assertThat(authors.get(0).getFirstName()).isEqualTo("Yugal");
+    }
+
+    @Test
+    void findAllAuthorsByLastNameSortFirstNameAsc() {
+        List<Author> authors = authorDao.findAllAuthorsByLastName("Smith",
+                PageRequest.of(0, 10, Sort.by(Sort.Order.asc("firstName"))));
+
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isEqualTo(10);
+        assertThat(authors.get(0).getFirstName()).isEqualTo("Ahmed");
+    }
+
+    @Test
+    void findAllAuthorsByLastNameAllRecs() {
+        List<Author> authors = authorDao.findAllAuthorsByLastName("Smith", PageRequest.of(0, 100));
+
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isEqualTo(40);
+
+    }
+
 }

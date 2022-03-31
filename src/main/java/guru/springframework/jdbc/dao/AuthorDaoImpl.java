@@ -1,6 +1,7 @@
 package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Author;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -130,6 +131,35 @@ public class AuthorDaoImpl implements AuthorDao {
         EntityManager em = getEntityManager();
         try {
             TypedQuery<Author> typedQuery = em.createNamedQuery("author_find_all", Author.class);
+            return typedQuery.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Author> findAll(Pageable pageable) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Author> typedQuery = em.createNamedQuery("author_find_all", Author.class);
+            typedQuery.setMaxResults(pageable.getPageSize());
+            typedQuery.setFirstResult(Math.toIntExact(pageable.getOffset()));
+            return typedQuery.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Author> findAllAuthorsByLastName(String lastname, Pageable pageable) {
+        EntityManager em = getEntityManager();
+        try {
+            String jpql = "SELECT a FROM Author a WHERE a.lastName = :last_name "
+                    + (pageable.getSort().getOrderFor("firstName") != null ? ("ORDER BY a.firstName " + pageable.getSort().getOrderFor("firstName").getDirection().name()) : "");
+            TypedQuery<Author> typedQuery = em.createQuery(jpql, Author.class);
+            typedQuery.setParameter("last_name", lastname);
+            typedQuery.setMaxResults(pageable.getPageSize());
+            typedQuery.setFirstResult(Math.toIntExact(pageable.getOffset()));
             return typedQuery.getResultList();
         } finally {
             em.close();
